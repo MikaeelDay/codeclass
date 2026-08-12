@@ -17,22 +17,18 @@
 
 ## ساختار پروژه
 ClassCode/
-├── manage.py # ابزار خط فرمان Django
-├── requirements.txt # وابستگی‌های پروژه
-├── codeclass/ # تنظیمات و کانفیگ اصلی پروژه
-│ ├── settings.py
-│ └── urls.py
-└── core/ # اپلیکیشن اصلی
-├── models.py # مدل Submission
-├── views.py # داشبورد، اجرای کد، پنل مدرس
-├── code_runner.py # اجرای امن‌ترِ کد پایتون در subprocess
-├── urls.py
-├── admin.py
-├── management/commands/
-│ └── add_student.py # ساخت سریع حساب کارآموز
-├── templates/core/ # قالب‌های HTML
-└── static/core/style.css # استایل
-
+├── manage.py
+├── requirements.txt
+├── codeclass/        # تنظیمات اصلی پروژه
+├── core/              # اپلیکیشن اصلی
+│   ├── models.py
+│   ├── views.py
+│   ├── code_runner.py
+│   ├── urls.py
+│   ├── admin.py
+│   ├── management/commands/add_student.py
+│   ├── templates/core/
+│   └── static/core/style.css
 ## اجرای پروژه به‌صورت محلی
 
 پیش‌نیاز: پایتون ۳ نصب شده باشد.
