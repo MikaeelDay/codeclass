@@ -12,4 +12,5 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("run/", views.run_code, name="run_code"),
+    path("submit/", views.save_submission, name="save_submission"),
 ]

@@ -34,9 +34,13 @@
     const codeInput = document.getElementById('code-input');
     const outputEl = document.getElementById('console-output');
     const runBtn = document.getElementById('run-btn');
+    const saveBtn = document.getElementById('save-btn');
+    let lastOutput = '';   // آخرین خروجی اجرا رو نگه می‌داریم تا موقع ثبت بفرستیمش
 
     runBtn.addEventListener('click', async () => {
         runBtn.disabled = true;
+        lastOutput = (result.stdout || '') + (result.stderr ? '\n' + result.stderr : '');
+        outputEl.textContent = lastOutput;
         outputEl.textContent = 'در حال اجرا…';
 
         const res = await fetch("{% url 'run_code' %}", {
@@ -55,6 +59,26 @@
             outputEl.textContent = (result.stdout || '') + (result.stderr ? '\n' + result.stderr : '');
         }
         runBtn.disabled = false;
+    });
+    saveBtn.addEventListener('click', async () => {
+        saveBtn.disabled = true;
+        const res = await fetch("{% url 'save_submission' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({code: codeInput.value, output: lastOutput}),
+        });
+        const result = await res.json();
+
+        if (result.ok) {
+            saveBtn.textContent = 'ثبت شد ✓';
+            setTimeout(() => location.reload(), 700);
+        } else {
+            alert(result.error || 'ثبت انجام نشد.');
+        }
+        saveBtn.disabled = false;
     });
 </script>
 </body>

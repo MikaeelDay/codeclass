@@ -4,7 +4,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .code_runner import run_python_code
-
+from .models import Submission
 
 STARTER_CODE = '''# اینجا کد پایتون خودتان را بنویسید
 print("سلام دنیا!")
@@ -37,3 +37,30 @@ def run_code(request):
 
     result = run_python_code(code)
     return JsonResponse(result)
+
+@login_required
+@require_POST
+def save_submission(request):
+    try:
+        data = json.loads(request.body)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({"error": "داده‌ی ارسالی نامعتبر است."}, status=400)
+
+    code = data.get("code", "")
+    output = data.get("output", "")
+    title = (data.get("title") or "").strip()
+
+    if not code.strip():
+        return JsonResponse({"error": "کدی برای ثبت وجود ندارد."}, status=400)
+
+    submission = Submission.objects.create(
+        student=request.user,
+        title=title,
+        code=code,
+        output=output,
+    )
+    return JsonResponse({
+        "ok": True,
+        "id": submission.id,
+        "created_at": submission.created_at.strftime("%Y-%m-%d %H:%M"),
+    })
