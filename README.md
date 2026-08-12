@@ -43,8 +43,9 @@ python manage.py migrate
 
 # 3) (اختیاری) ساخت کاربر ادمین
 python manage.py createsuperuser
-
-# 4) اجرای سرور توسعه
+# 4) ساخت حساب برای هر کارآموز (بدون صفحه‌ی ثبت‌نام)
+python manage.py add_student ali 123456
+# 5) اجرای سرور توسعه
 python manage.py runserver
 ```
 
