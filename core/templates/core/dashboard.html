@@ -10,7 +10,7 @@
     {% if user.is_staff %}
         <a href="{% url 'instructor_overview' %}">پنل مدرس</a> |
     {% endif %}
-    <form method="post" action="{% url 'logout' %}" style="display:inline">
+<form method="post" action="{% url 'logout' %}" style="display:inline">
     {% csrf_token %}
     <button type="submit">خروج</button>
 </form>
@@ -30,7 +30,12 @@
 {% if my_submissions %}
     <ul>
         {% for s in my_submissions %}
-            <li>{{ s.title|default:"بدون عنوان" }} — {{ s.created_at|date:"Y-m-d H:i" }}</li>
+            <li>
+                {{ s.title|default:"بدون عنوان" }} — {{ s.created_at|date:"Y-m-d H:i" }}
+                {% if s.reviewed %}<span style="color:green">✓ بررسی‌شده</span>{% else %}
+                    <span style="color:orange">در انتظار بررسی</span>{% endif %}
+                {% if s.instructor_note %}<br><em>یادداشت مدرس: {{ s.instructor_note }}</em>{% endif %}
+            </li>
         {% endfor %}
     </ul>
 {% else %}

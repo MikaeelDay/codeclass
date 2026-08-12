@@ -5,19 +5,29 @@
     <title>{{ student.username }}</title>
 </head>
 <body>
-    <p><a href="{% url 'instructor_overview' %}">بازگشت به فهرست</a></p>
-    <h1>اسکریپت‌های {{ student.username }}</h1>
+<p><a href="{% url 'instructor_overview' %}">بازگشت به فهرست</a></p>
+<h1>اسکریپت‌های {{ student.username }}</h1>
 
-    {% if submissions %}
-        {% for s in submissions %}
+{% if submissions %}
+    {% for s in submissions %}
         <div style="border:1px solid #ccc; margin-bottom:16px; padding:12px;">
             <strong>{{ s.title|default:"بدون عنوان" }}</strong> — {{ s.created_at|date:"Y-m-d H:i" }}
+            {% if s.reviewed %}<span style="color:green">✓ بررسی‌شده</span>{% else %}
+                <span style="color:orange">در انتظار بررسی</span>{% endif %}
             <pre>{{ s.code }}</pre>
-            {% if s.output %}<p>خروجی:</p><pre>{{ s.output }}</pre>{% endif %}
+            {% if s.output %}<p>خروجی:</p>
+                <pre>{{ s.output }}</pre>{% endif %}
+
+            <form method="post" action="{% url 'mark_reviewed' s.id %}">
+                {% csrf_token %}
+                <input type="text" name="note" placeholder="یادداشت برای کارآموز (اختیاری)"
+                       value="{{ s.instructor_note }}" style="width:300px">
+                <button type="submit">ثبت بررسی</button>
+            </form>
         </div>
-        {% endfor %}
-    {% else %}
-        <p>این کارآموز هنوز چیزی ثبت نکرده.</p>
-    {% endif %}
+    {% endfor %}
+{% else %}
+    <p>این کارآموز هنوز چیزی ثبت نکرده.</p>
+{% endif %}
 </body>
 </html>

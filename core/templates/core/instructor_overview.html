@@ -5,22 +5,30 @@
     <title>پنل مدرس</title>
 </head>
 <body>
-    <p><a href="{% url 'dashboard' %}">بازگشت</a> | <a href="{% url 'logout' %}">خروج</a></p>
-    <h1>کارآموزها</h1>
+<p><a href="{% url 'dashboard' %}">بازگشت</a>
+<form method="post" action="{% url 'logout' %}" style="display:inline">
+    {% csrf_token %}
+    <button type="submit">خروج</button>
+</form>
+<h1>کارآموزها</h1>
 
-    {% if students %}
-        <table border="1" cellpadding="8">
-            <tr><th>نام کاربری</th><th>تعداد اسکریپت‌ها</th><th></th></tr>
-            {% for s in students %}
+{% if students %}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>نام کاربری</th>
+            <th>تعداد اسکریپت‌ها</th>
+            <th></th>
+        </tr>
+        {% for s in students %}
             <tr>
                 <td>{{ s.username }}</td>
                 <td>{{ s.submission_count }}</td>
                 <td><a href="{% url 'instructor_student_detail' s.id %}">مشاهده</a></td>
             </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>هنوز کارآموزی ثبت نشده.</p>
-    {% endif %}
+        {% endfor %}
+    </table>
+{% else %}
+    <p>هنوز کارآموزی ثبت نشده.</p>
+{% endif %}
 </body>
 </html>

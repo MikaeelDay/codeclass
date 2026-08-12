@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .code_runner import run_python_code
 from .models import Submission
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+
 
 STARTER_CODE = '''# اینجا کد پایتون خودتان را بنویسید
 print("سلام دنیا!")
@@ -97,3 +97,14 @@ def instructor_student_detail(request, user_id):
         "core/instructor_student_detail.html",
         {"student": student, "submissions": submissions},
     )
+
+@user_passes_test(is_instructor)
+@require_POST
+def mark_reviewed(request, submission_id):
+    submission = get_object_or_404(Submission, pk=submission_id)
+    submission.reviewed = True
+    note = request.POST.get("note", "").strip()
+    if note:
+        submission.instructor_note = note
+    submission.save()
+    return redirect("instructor_student_detail", user_id=submission.student_id)

@@ -15,4 +15,5 @@ urlpatterns = [
     path("submit/", views.save_submission, name="save_submission"),
     path("instructor/", views.instructor_overview, name="instructor_overview"),
     path("instructor/student/<int:user_id>/", views.instructor_student_detail, name="instructor_student_detail"),
+    path("instructor/submission/<int:submission_id>/review/", views.mark_reviewed, name="mark_reviewed"),
 ]
