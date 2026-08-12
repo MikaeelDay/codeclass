@@ -132,3 +132,4 @@ LOGIN_REDIRECT_URL = "login"   # فعلاً چون dashboard رو نساختیم
 LOGOUT_REDIRECT_URL = "login"
 
 LOGIN_REDIRECT_URL = "dashboard"   # قبلاً "login" بود
+CODE_RUN_TIMEOUT_SECONDS = 5

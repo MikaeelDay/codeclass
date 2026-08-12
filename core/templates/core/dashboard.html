@@ -5,27 +5,57 @@
     <title>محیط کدنویسی</title>
 </head>
 <body>
-    <p>خوش آمدی، {{ user.username }} | <a href="{% url 'logout' %}">خروج</a></p>
+<p>خوش آمدی، {{ user.username }} | <a href="{% url 'logout' %}">خروج</a></p>
 
-    <h1>محیط کدنویسی پایتون</h1>
+<h1>محیط کدنویسی پایتون</h1>
 
-    <textarea id="code-input" rows="12" cols="70">{{ starter_code }}</textarea>
-    <br>
-    <button id="run-btn">▶ اجرا</button>
-    <button id="save-btn">ثبت برای مدرس</button>
+<textarea id="code-input" rows="12" cols="70">{{ starter_code }}</textarea>
+<br>
+<button id="run-btn">▶ اجرا</button>
+<button id="save-btn">ثبت برای مدرس</button>
 
-    <h3>خروجی</h3>
-    <pre id="console-output">هنوز چیزی اجرا نشده.</pre>
+<h3>خروجی</h3>
+<pre id="console-output">هنوز چیزی اجرا نشده.</pre>
 
-    <h3>اسکریپت‌های ثبت‌شده‌ی من</h3>
-    {% if my_submissions %}
-        <ul>
+<h3>اسکریپت‌های ثبت‌شده‌ی من</h3>
+{% if my_submissions %}
+    <ul>
         {% for s in my_submissions %}
             <li>{{ s.title|default:"بدون عنوان" }} — {{ s.created_at|date:"Y-m-d H:i" }}</li>
         {% endfor %}
-        </ul>
-    {% else %}
-        <p>هنوز چیزی ثبت نکرده‌ای.</p>
-    {% endif %}
+    </ul>
+{% else %}
+    <p>هنوز چیزی ثبت نکرده‌ای.</p>
+{% endif %}
+
+{% csrf_token %}
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const codeInput = document.getElementById('code-input');
+    const outputEl = document.getElementById('console-output');
+    const runBtn = document.getElementById('run-btn');
+
+    runBtn.addEventListener('click', async () => {
+        runBtn.disabled = true;
+        outputEl.textContent = 'در حال اجرا…';
+
+        const res = await fetch("{% url 'run_code' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({code: codeInput.value}),
+        });
+        const result = await res.json();
+
+        if (result.error) {
+            outputEl.textContent = result.error;
+        } else {
+            outputEl.textContent = (result.stdout || '') + (result.stderr ? '\n' + result.stderr : '');
+        }
+        runBtn.disabled = false;
+    });
+</script>
 </body>
 </html>
