@@ -130,3 +130,5 @@ MAILERS = {
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "login"   # فعلاً چون dashboard رو نساختیم، همون‌جا برمی‌گردونیم
 LOGOUT_REDIRECT_URL = "login"
+
+LOGIN_REDIRECT_URL = "dashboard"   # قبلاً "login" بود
