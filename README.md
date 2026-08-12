@@ -19,16 +19,18 @@
 ClassCode/
 ├── manage.py
 ├── requirements.txt
-├── codeclass/        # تنظیمات اصلی پروژه
-├── core/              # اپلیکیشن اصلی
-│   ├── models.py
-│   ├── views.py
-│   ├── code_runner.py
-│   ├── urls.py
-│   ├── admin.py
-│   ├── management/commands/add_student.py
-│   ├── templates/core/
-│   └── static/core/style.css
+├── codeclass/
+│   ├── settings.py
+│   └── urls.py
+└── core/
+    ├── models.py
+    ├── views.py
+    ├── code_runner.py
+    ├── urls.py
+    ├── admin.py
+    ├── management/commands/add_student.py
+    ├── templates/core/
+    └── static/core/style.css
 ## اجرای پروژه به‌صورت محلی
 
 پیش‌نیاز: پایتون ۳ نصب شده باشد.
