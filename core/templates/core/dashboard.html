@@ -5,7 +5,16 @@
     <title>محیط کدنویسی</title>
 </head>
 <body>
-<p>خوش آمدی، {{ user.username }} | <a href="{% url 'logout' %}">خروج</a></p>
+<p>
+    خوش آمدی، {{ user.username }} |
+    {% if user.is_staff %}
+        <a href="{% url 'instructor_overview' %}">پنل مدرس</a> |
+    {% endif %}
+    <form method="post" action="{% url 'logout' %}" style="display:inline">
+    {% csrf_token %}
+    <button type="submit">خروج</button>
+</form>
+</p>
 
 <h1>محیط کدنویسی پایتون</h1>
 
