@@ -69,6 +69,7 @@ python manage.py runserver
 
 ## مسیرهای (URL) موجود
 
+<<<<<<< HEAD
 | مسیر                        | نام                         | توضیح                            |
 | --------------------------- | --------------------------- | -------------------------------- |
 | `/`                         | `login`                     | صفحه ورود                        |
@@ -79,6 +80,18 @@ python manage.py runserver
 | `/submit/`                  | `save_submission`           | ثبت کد و خروجی به‌عنوان یک ارسال |
 | `/instructor/`              | `instructor_overview`       | فهرست کارآموزها برای مدرس        |
 | `/instructor/student/<id>/` | `instructor_student_detail` | اسکریپت‌های یک کارآموز خاص       |
+=======
+| مسیر | نام | توضیح |
+|------|-----|-------|
+| `/` | `login` | صفحه ورود |
+| `/logout/` | `logout` | خروج کاربر |
+| `/dashboard/` | `dashboard` | داشبورد کاربر |
+| `/admin/` | — | پنل ادمین |
+| `/run/` | `run_code` | اجرای کد پایتون ارسالی (AJAX) |
+| `/submit/` | `save_submission` | ثبت کد و خروجی به‌عنوان یک ارسال |
+| `/instructor/` | `instructor_overview` | فهرست کارآموزها برای مدرس |
+| `/instructor/student/<id>/` | `instructor_student_detail` | اسکریپت‌های یک کارآموز خاص |
+>>>>>>> 53176cbca1d264f1c29b8cfdb0bc3c7c8dbefaaa
 
 ## تکنولوژی‌ها
 
