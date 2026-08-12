@@ -76,6 +76,8 @@ python manage.py runserver
 | `/admin/` | — | پنل ادمین |
 | `/run/` | `run_code` | اجرای کد پایتون ارسالی (AJAX) |
 | `/submit/` | `save_submission` | ثبت کد و خروجی به‌عنوان یک ارسال |
+| `/instructor/` | `instructor_overview` | فهرست کارآموزها برای مدرس |
+| `/instructor/student/<id>/` | `instructor_student_detail` | اسکریپت‌های یک کارآموز خاص |
 
 ## تکنولوژی‌ها
 
@@ -87,5 +89,5 @@ python manage.py runserver
 
 - [x] تکمیل محیط اجرای کد
 - [x] ثبت و ذخیره واقعی ارسال‌های دانشجویان
-- [ ] رابط بررسی و بازخورد برای اساتید
+- [x] رابط بررسی و بازخورد برای اساتید
 - [ ] بهبود رابط کاربری داشبورد
