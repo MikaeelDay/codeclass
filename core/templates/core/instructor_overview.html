@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>پنل مدرس</title>
+</head>
+<body>
+    <p><a href="{% url 'dashboard' %}">بازگشت</a> | <a href="{% url 'logout' %}">خروج</a></p>
+    <h1>کارآموزها</h1>
+
+    {% if students %}
+        <table border="1" cellpadding="8">
+            <tr><th>نام کاربری</th><th>تعداد اسکریپت‌ها</th><th></th></tr>
+            {% for s in students %}
+            <tr>
+                <td>{{ s.username }}</td>
+                <td>{{ s.submission_count }}</td>
+                <td><a href="{% url 'instructor_student_detail' s.id %}">مشاهده</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>هنوز کارآموزی ثبت نشده.</p>
+    {% endif %}
+</body>
+</html>

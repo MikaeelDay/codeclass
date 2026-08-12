@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .code_runner import run_python_code
 from .models import Submission
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import get_object_or_404
 
 STARTER_CODE = '''# اینجا کد پایتون خودتان را بنویسید
 print("سلام دنیا!")
@@ -64,3 +66,34 @@ def save_submission(request):
         "id": submission.id,
         "created_at": submission.created_at.strftime("%Y-%m-%d %H:%M"),
     })
+
+def is_instructor(user):
+    return user.is_staff
+
+
+@user_passes_test(is_instructor)
+def instructor_overview(request):
+    from django.contrib.auth import get_user_model
+    from django.db.models import Count
+
+    User = get_user_model()
+    students = (
+        User.objects.filter(is_staff=False)
+        .annotate(submission_count=Count("submissions"))
+        .order_by("username")
+    )
+    return render(request, "core/instructor_overview.html", {"students": students})
+
+
+@user_passes_test(is_instructor)
+def instructor_student_detail(request, user_id):
+    from django.contrib.auth import get_user_model
+
+    User = get_user_model()
+    student = get_object_or_404(User, pk=user_id)
+    submissions = student.submissions.all()
+    return render(
+        request,
+        "core/instructor_student_detail.html",
+        {"student": student, "submissions": submissions},
+    )

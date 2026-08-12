@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ student.username }}</title>
+</head>
+<body>
+    <p><a href="{% url 'instructor_overview' %}">بازگشت به فهرست</a></p>
+    <h1>اسکریپت‌های {{ student.username }}</h1>
+
+    {% if submissions %}
+        {% for s in submissions %}
+        <div style="border:1px solid #ccc; margin-bottom:16px; padding:12px;">
+            <strong>{{ s.title|default:"بدون عنوان" }}</strong> — {{ s.created_at|date:"Y-m-d H:i" }}
+            <pre>{{ s.code }}</pre>
+            {% if s.output %}<p>خروجی:</p><pre>{{ s.output }}</pre>{% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>این کارآموز هنوز چیزی ثبت نکرده.</p>
+    {% endif %}
+</body>
+</html>
