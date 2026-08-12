@@ -1,33 +1,34 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ student.username }}</title>
-</head>
-<body>
-<p><a href="{% url 'instructor_overview' %}">بازگشت به فهرست</a></p>
-<h1>اسکریپت‌های {{ student.username }}</h1>
+{% extends "core/base.html" %}
+{% block title %}{{ student.username }} | پنل مدرس{% endblock %}
+{% block content %}
+<div class="instructor-page">
+    <a href="{% url 'instructor_overview' %}" class="back-link">← بازگشت به فهرست کارآموزها</a>
+    <h1 class="page-heading">$ اسکریپت‌های {{ student.username }}</h1>
 
-{% if submissions %}
-    {% for s in submissions %}
-        <div style="border:1px solid #ccc; margin-bottom:16px; padding:12px;">
-            <strong>{{ s.title|default:"بدون عنوان" }}</strong> — {{ s.created_at|date:"Y-m-d H:i" }}
-            {% if s.reviewed %}<span style="color:green">✓ بررسی‌شده</span>{% else %}
-                <span style="color:orange">در انتظار بررسی</span>{% endif %}
-            <pre>{{ s.code }}</pre>
-            {% if s.output %}<p>خروجی:</p>
-                <pre>{{ s.output }}</pre>{% endif %}
-
-            <form method="post" action="{% url 'mark_reviewed' s.id %}">
+    {% if submissions %}
+    <div class="submission-detail-list">
+        {% for s in submissions %}
+        <div class="submission-detail">
+            <div class="submission-detail__head">
+                <span class="submission-detail__title">{{ s.title|default:"بدون عنوان" }}</span>
+                <span class="submission-detail__date">{{ s.created_at|date:"Y-m-d H:i" }}</span>
+                {% if s.reviewed %}<span class="badge badge--ok">بررسی‌شده</span>{% else %}<span class="badge">در انتظار بررسی</span>{% endif %}
+            </div>
+            <pre class="console console--code">{{ s.code }}</pre>
+            {% if s.output %}
+            <p class="submission-detail__label">خروجی هنگام ثبت:</p>
+            <pre class="console">{{ s.output }}</pre>
+            {% endif %}
+            <form method="post" action="{% url 'mark_reviewed' s.id %}" class="review-form">
                 {% csrf_token %}
-                <input type="text" name="note" placeholder="یادداشت برای کارآموز (اختیاری)"
-                       value="{{ s.instructor_note }}" style="width:300px">
-                <button type="submit">ثبت بررسی</button>
+                <input type="text" name="note" placeholder="یادداشت برای کارآموز (اختیاری)" value="{{ s.instructor_note }}">
+                <button type="submit" class="btn btn--small btn--accent">ثبت بررسی</button>
             </form>
         </div>
-    {% endfor %}
-{% else %}
-    <p>این کارآموز هنوز چیزی ثبت نکرده.</p>
-{% endif %}
-</body>
-</html>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="sidebar__empty">این کارآموز هنوز هیچ اسکریپتی ثبت نکرده است.</p>
+    {% endif %}
+</div>
+{% endblock %}

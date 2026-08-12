@@ -1,23 +1,31 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>ورود</title>
-</head>
-<body>
-    <h1>ورود به کلاس</h1>
+{% extends "core/base.html" %}
+{% block title %}ورود | کلاس پایتون{% endblock %}
+{% block content %}
+<div class="login-wrap">
+    <div class="login-card">
+        <div class="login-card__prompt">
+            <span class="dot dot--red"></span>
+            <span class="dot dot--yellow"></span>
+            <span class="dot dot--green"></span>
+        </div>
+        <h1 class="login-card__heading">$ ورود به کلاس</h1>
+        <p class="login-card__sub">با نام‌کاربری و رمزی که مدرس در اختیارتان گذاشته وارد شوید.</p>
 
-    {% if form.errors %}
-        <p style="color:red">نام کاربری یا رمز عبور اشتباه است.</p>
-    {% endif %}
+        {% if form.errors %}
+        <div class="alert alert--error">نام کاربری یا رمز عبور اشتباه است.</div>
+        {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        <label>نام کاربری</label>
-        <input type="text" name="username" required>
-        <label>رمز عبور</label>
-        <input type="password" name="password" required>
-        <button type="submit">ورود</button>
-    </form>
-</body>
-</html>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <label for="id_username">نام کاربری</label>
+            <input type="text" name="username" id="id_username" autofocus required>
+
+            <label for="id_password">رمز عبور</label>
+            <input type="password" name="password" id="id_password" required>
+
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit" class="btn btn--primary btn--block">ورود</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

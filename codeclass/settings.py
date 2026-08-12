@@ -133,3 +133,6 @@ LOGOUT_REDIRECT_URL = "login"
 
 LOGIN_REDIRECT_URL = "dashboard"   # قبلاً "login" بود
 CODE_RUN_TIMEOUT_SECONDS = 5
+
+STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "core" / "static"]

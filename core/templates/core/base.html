@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}کلاس پایتون{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar__brand">
+            <span class="dot dot--red"></span>
+            <span class="dot dot--yellow"></span>
+            <span class="dot dot--green"></span>
+            <span class="topbar__title">کلاس&nbsp;پایتون</span>
+        </div>
+        {% if user.is_authenticated %}
+        <nav class="topbar__nav">
+            {% if user.is_staff %}
+                <a href="{% url 'instructor_overview' %}">پنل مدرس</a>
+            {% else %}
+                <a href="{% url 'dashboard' %}">محیط کدنویسی</a>
+            {% endif %}
+            <span class="topbar__user">{{ user.username }}</span>
+            <form action="{% url 'logout' %}" method="post" class="topbar__logout">
+                {% csrf_token %}
+                <button type="submit">خروج</button>
+            </form>
+        </nav>
+        {% endif %}
+    </header>
+
+    <main class="page">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

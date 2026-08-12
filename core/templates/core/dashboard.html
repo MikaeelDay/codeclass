@@ -1,99 +1,137 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>محیط کدنویسی</title>
-</head>
-<body>
-<p>
-    خوش آمدی، {{ user.username }} |
-    {% if user.is_staff %}
-        <a href="{% url 'instructor_overview' %}">پنل مدرس</a> |
-    {% endif %}
-<form method="post" action="{% url 'logout' %}" style="display:inline">
-    {% csrf_token %}
-    <button type="submit">خروج</button>
-</form>
-</p>
+{% extends "core/base.html" %}
+{% block title %}محیط کدنویسی | کلاس پایتون{% endblock %}
+{% block content %}
+<div class="editor-page">
+    <div class="editor-page__main">
+        <div class="panel">
+            <div class="panel__bar">
+                <span class="panel__bar-label">main.py</span>
+                <div class="panel__bar-actions">
+                    <input type="text" id="title-input" placeholder="عنوان اسکریپت (اختیاری)">
+                    <button id="run-btn" class="btn btn--accent">▶ اجرا</button>
+                    <button id="save-btn" class="btn btn--primary">ثبت برای مدرس</button>
+                </div>
+            </div>
+            <textarea id="code-input" spellcheck="false">{{ starter_code }}</textarea>
+        </div>
 
-<h1>محیط کدنویسی پایتون</h1>
+        <div class="panel panel--console">
+            <div class="panel__bar">
+                <span class="panel__bar-label">خروجی</span>
+                <span id="run-status" class="panel__bar-status"></span>
+            </div>
+            <pre id="console-output" class="console">برای دیدن خروجی، روی «اجرا» بزنید…</pre>
+        </div>
+    </div>
 
-<textarea id="code-input" rows="12" cols="70">{{ starter_code }}</textarea>
-<br>
-<button id="run-btn">▶ اجرا</button>
-<button id="save-btn">ثبت برای مدرس</button>
-
-<h3>خروجی</h3>
-<pre id="console-output">هنوز چیزی اجرا نشده.</pre>
-
-<h3>اسکریپت‌های ثبت‌شده‌ی من</h3>
-{% if my_submissions %}
-    <ul>
-        {% for s in my_submissions %}
-            <li>
-                {{ s.title|default:"بدون عنوان" }} — {{ s.created_at|date:"Y-m-d H:i" }}
-                {% if s.reviewed %}<span style="color:green">✓ بررسی‌شده</span>{% else %}
-                    <span style="color:orange">در انتظار بررسی</span>{% endif %}
-                {% if s.instructor_note %}<br><em>یادداشت مدرس: {{ s.instructor_note }}</em>{% endif %}
+    <aside class="editor-page__sidebar">
+        <h2 class="sidebar__title">اسکریپت‌های ثبت‌شده‌ی من</h2>
+        {% if my_submissions %}
+        <ul class="submission-list">
+            {% for s in my_submissions %}
+            <li class="submission-list__item">
+                <span class="submission-list__title">{{ s.title|default:"بدون عنوان" }}</span>
+                <span class="submission-list__meta">
+                    {{ s.created_at|date:"Y-m-d H:i" }}
+                    {% if s.reviewed %}<span class="badge badge--ok">بررسی‌شده</span>{% else %}<span class="badge">در انتظار بررسی</span>{% endif %}
+                </span>
+                {% if s.instructor_note %}
+                <p class="submission-list__note">یادداشت مدرس: {{ s.instructor_note }}</p>
+                {% endif %}
             </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>هنوز چیزی ثبت نکرده‌ای.</p>
-{% endif %}
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="sidebar__empty">هنوز هیچ اسکریپتی ثبت نکرده‌اید.</p>
+        {% endif %}
+    </aside>
+</div>
 
-{% csrf_token %}
 <script>
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const codeInput = document.getElementById('code-input');
-    const outputEl = document.getElementById('console-output');
-    const runBtn = document.getElementById('run-btn');
-    const saveBtn = document.getElementById('save-btn');
-    let lastOutput = '';   // آخرین خروجی اجرا رو نگه می‌داریم تا موقع ثبت بفرستیمش
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+    || document.cookie.split('; ').find(r => r.startsWith('csrftoken='))?.split('=')[1];
 
-    runBtn.addEventListener('click', async () => {
-        runBtn.disabled = true;
-        lastOutput = (result.stdout || '') + (result.stderr ? '\n' + result.stderr : '');
-        outputEl.textContent = lastOutput;
-        outputEl.textContent = 'در حال اجرا…';
+const codeInput = document.getElementById('code-input');
+const titleInput = document.getElementById('title-input');
+const outputEl = document.getElementById('console-output');
+const statusEl = document.getElementById('run-status');
+const runBtn = document.getElementById('run-btn');
+const saveBtn = document.getElementById('save-btn');
 
-        const res = await fetch("{% url 'run_code' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify({code: codeInput.value}),
-        });
-        const result = await res.json();
+let lastOutput = '';
 
+codeInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = this.selectionStart, end = this.selectionEnd;
+        this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 4;
+    }
+});
+
+async function postJSON(url, data) {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+        body: JSON.stringify(data),
+    });
+    return res.json();
+}
+
+runBtn.addEventListener('click', async () => {
+    runBtn.disabled = true;
+    statusEl.textContent = 'در حال اجرا…';
+    statusEl.className = 'panel__bar-status panel__bar-status--running';
+    try {
+        const result = await postJSON("{% url 'run_code' %}", { code: codeInput.value });
         if (result.error) {
             outputEl.textContent = result.error;
+            statusEl.textContent = 'خطا';
+            statusEl.className = 'panel__bar-status panel__bar-status--error';
         } else {
-            outputEl.textContent = (result.stdout || '') + (result.stderr ? '\n' + result.stderr : '');
+            lastOutput = (result.stdout || '') + (result.stderr ? '\n' + result.stderr : '');
+            outputEl.textContent = lastOutput.trim() || '(بدون خروجی)';
+            if (result.timed_out || result.returncode) {
+                statusEl.textContent = 'پایان با خطا';
+                statusEl.className = 'panel__bar-status panel__bar-status--error';
+            } else {
+                statusEl.textContent = 'اجرا موفق بود';
+                statusEl.className = 'panel__bar-status panel__bar-status--ok';
+            }
         }
+    } catch (err) {
+        outputEl.textContent = 'ارتباط با سرور برقرار نشد.';
+        statusEl.textContent = 'خطا';
+        statusEl.className = 'panel__bar-status panel__bar-status--error';
+    } finally {
         runBtn.disabled = false;
-    });
-    saveBtn.addEventListener('click', async () => {
-        saveBtn.disabled = true;
-        const res = await fetch("{% url 'save_submission' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify({code: codeInput.value, output: lastOutput}),
-        });
-        const result = await res.json();
+    }
+});
 
+saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'در حال ثبت…';
+    try {
+        const result = await postJSON("{% url 'save_submission' %}", {
+            code: codeInput.value,
+            output: lastOutput,
+            title: titleInput.value,
+        });
         if (result.ok) {
             saveBtn.textContent = 'ثبت شد ✓';
             setTimeout(() => location.reload(), 700);
         } else {
+            saveBtn.textContent = originalText;
             alert(result.error || 'ثبت انجام نشد.');
         }
+    } catch (err) {
+        saveBtn.textContent = originalText;
+        alert('ارتباط با سرور برقرار نشد.');
+    } finally {
         saveBtn.disabled = false;
-    });
+    }
+});
 </script>
-</body>
-</html>
+{% csrf_token %}
+{% endblock %}
