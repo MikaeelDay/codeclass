@@ -18,7 +18,7 @@
         {% for article in articles %}
         <article class="article-card">
             <h3 class="article-card__title">
-                <a href="#">{{ article.title }}</a>
+                <a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a>
             </h3>
             <p class="article-card__meta">
                 {{ article.author.username|default:"ناشناس" }} — {{ article.created_at|date:"Y-m-d" }}

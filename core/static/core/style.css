@@ -237,6 +237,25 @@ code {
     margin-top: 40px;
 }
 
+/* ----- Article detail ----- */
+.article-full { max-width: 720px; margin: 0 auto; }
+.article-full__title {
+    font-family: var(--font-mono);
+    color: var(--amber);
+    font-size: 1.8rem;
+    margin: 16px 0 6px;
+}
+.article-full__meta {
+    color: var(--text-dim);
+    font-size: .82rem;
+    margin: 0 0 28px;
+}
+.article-full__body {
+    line-height: 2;
+    font-size: 1rem;
+}
+.article-full__body p { margin: 0 0 18px; }
+
 /* ----- Responsive ----- */
 @media (max-width: 860px) {
     .editor-page { grid-template-columns: 1fr; }

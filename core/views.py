@@ -113,3 +113,9 @@ def mark_reviewed(request, submission_id):
         submission.instructor_note = note
     submission.save()
     return redirect("instructor_student_detail", user_id=submission.student_id)
+
+
+
+def article_detail(request, slug):
+    article = get_object_or_404(Article, slug=slug, published=True)
+    return render(request, "core/article_detail.html", {"article": article})

@@ -17,4 +17,5 @@ urlpatterns = [
     path("instructor/", views.instructor_overview, name="instructor_overview"),
     path("instructor/student/<int:user_id>/", views.instructor_student_detail, name="instructor_student_detail"),
     path("instructor/submission/<int:submission_id>/review/", views.mark_reviewed, name="mark_reviewed"),
+    path("articles/<slug:slug>/", views.article_detail, name="article_detail"),
 ]

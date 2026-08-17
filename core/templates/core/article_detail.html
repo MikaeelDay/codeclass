@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+{% block title %}{{ article.title }} | کلاس پایتون{% endblock %}
+{% block content %}
+<article class="article-full">
+    <a href="{% url 'home' %}" class="back-link">← بازگشت به صفحه اصلی</a>
+    <h1 class="article-full__title">{{ article.title }}</h1>
+    <p class="article-full__meta">
+        {{ article.author.username|default:"ناشناس" }} — {{ article.created_at|date:"Y-m-d" }}
+    </p>
+    <div class="article-full__body">
+        {{ article.content|linebreaks }}
+    </div>
+</article>
+{% endblock %}
