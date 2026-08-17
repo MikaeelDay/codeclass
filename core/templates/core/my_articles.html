@@ -1,0 +1,43 @@
+{% extends "core/base.html" %}
+{% block title %}مقالات من{% endblock %}
+{% block content %}
+<h1 class="page-heading">مقالات من</h1>
+<a href="{% url 'article_create' %}" class="btn btn--primary" style="margin-bottom:20px;display:inline-block;">+ مقاله‌ی جدید</a>
+
+{% if articles %}
+<div class="submission-detail-list">
+    {% for article in articles %}
+    <div class="submission-detail">
+        <div class="submission-detail__head">
+            <span class="submission-detail__title">{{ article.title }}</span>
+            <span class="submission-detail__date">{{ article.created_at|date:"Y-m-d" }}</span>
+            {% if article.published %}
+                <span class="badge badge--ok">منتشرشده</span>
+            {% else %}
+                <span class="badge">پیش‌نویس</span>
+            {% endif %}
+        </div>
+        <a href="{% url 'article_detail' article.slug %}" class="btn btn--small btn--primary">مشاهده</a>
+        <a href="{% url 'article_edit' article.slug %}" class="btn btn--small btn--accent">ویرایش</a>
+        <form method="post" action="{% url 'article_delete' article.slug %}"
+              style="display:inline"
+              onsubmit="return confirm('مطمئنی می‌خوای این مقاله حذف بشه؟');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn--small" style="background:var(--red);color:#2a0000;">حذف</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+{% if articles.has_other_pages %}
+<div class="pagination">
+    {% if articles.has_previous %}<a href="?page={{ articles.previous_page_number }}">« قبلی</a>{% endif %}
+    <span>صفحه {{ articles.number }} از {{ articles.paginator.num_pages }}</span>
+    {% if articles.has_next %}<a href="?page={{ articles.next_page_number }}">بعدی »</a>{% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<p class="sidebar__empty">هنوز مقاله‌ای ننوشته‌ای.</p>
+{% endif %}
+{% endblock %}

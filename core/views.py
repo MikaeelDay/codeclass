@@ -7,6 +7,9 @@ from .models import Submission, Article
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import ArticleForm
+from django.core.paginator import Paginator
+
+
 
 STARTER_CODE = '''# اینجا کد پایتون خودتان را بنویسید
 print("سلام دنیا!")
@@ -14,7 +17,10 @@ print("سلام دنیا!")
 
 
 def home(request):
-    articles = Article.objects.filter(published=True)
+    articles_qs = Article.objects.filter(published=True)
+    paginator = Paginator(articles_qs, 6)  # ۶ مقاله در هر صفحه
+    page_number = request.GET.get("page")
+    articles = paginator.get_page(page_number)
     return render(request, "core/home.html", {"articles": articles})
 
 
@@ -146,3 +152,19 @@ def article_edit(request, slug):
     else:
         form = ArticleForm(instance=article)
     return render(request, "core/article_form.html", {"form": form, "mode": "edit", "article": article})
+
+
+@user_passes_test(is_instructor)
+def my_articles(request):
+    articles_qs = Article.objects.filter(author=request.user)
+    paginator = Paginator(articles_qs, 10)
+    page_number = request.GET.get("page")
+    articles = paginator.get_page(page_number)
+    return render(request, "core/my_articles.html", {"articles": articles})
+
+@user_passes_test(is_instructor)
+@require_POST
+def article_delete(request, slug):
+    article = get_object_or_404(Article, slug=slug, author=request.user)
+    article.delete()
+    return redirect("my_articles")

@@ -2,36 +2,49 @@
 {% block title %}کلاس پایتون{% endblock %}
 {% block content %}
 
-<section class="hero">
-    <h1 class="hero__title">کلاس پایتون</h1>
-    <p class="hero__subtitle">جایی برای یادگیری عملی برنامه‌نویسی پایتون — کدنویسی زنده در مرورگر و بازخورد مستقیم مدرس.</p>
-    {% if not user.is_authenticated %}
-    <a href="{% url 'login' %}" class="btn btn--accent">ورود به کلاس</a>
-    {% endif %}
-</section>
+    <section class="hero">
+        <h1 class="hero__title">کلاس پایتون</h1>
+        <p class="hero__subtitle">جایی برای یادگیری عملی برنامه‌نویسی پایتون — کدنویسی زنده در مرورگر و بازخورد مستقیم
+            مدرس.</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}" class="btn btn--accent">ورود به کلاس</a>
+        {% endif %}
+    </section>
 
-<section class="articles-section">
-    <h2 class="page-heading">آخرین مقاله‌ها</h2>
+    <section class="articles-section">
+        <h2 class="page-heading">آخرین مقاله‌ها</h2>
 
-    {% if articles %}
-    <div class="article-grid">
-        {% for article in articles %}
-        <article class="article-card">
-            <h3 class="article-card__title">
-                <a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a>
-            </h3>
-            <p class="article-card__meta">
-                {{ article.author.username|default:"ناشناس" }} — {{ article.created_at|date:"Y-m-d" }}
-            </p>
-            {% if article.summary %}
-            <p class="article-card__summary">{{ article.summary }}</p>
+        {% if articles %}
+            <div class="article-grid">
+                {% for article in articles %}
+                    <article class="article-card">
+                        <h3 class="article-card__title">
+                            <a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a>
+                        </h3>
+                        <p class="article-card__meta">
+                            {{ article.author.username|default:"ناشناس" }} — {{ article.created_at|date:"Y-m-d" }}
+                        </p>
+                        {% if article.summary %}
+                            <p class="article-card__summary">{{ article.summary }}</p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% if articles.has_other_pages %}
+                <div class="pagination">
+                    {% if articles.has_previous %}
+                        <a href="?page={{ articles.previous_page_number }}">« قبلی</a>
+                    {% endif %}
+                    <span>صفحه {{ articles.number }} از {{ articles.paginator.num_pages }}</span>
+                    {% if articles.has_next %}
+                        <a href="?page={{ articles.next_page_number }}">بعدی »</a>
+                    {% endif %}
+                </div>
             {% endif %}
-        </article>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p class="sidebar__empty">هنوز هیچ مقاله‌ای منتشر نشده.</p>
-    {% endif %}
-</section>
+        {% else %}
+            <p class="sidebar__empty">هنوز هیچ مقاله‌ای منتشر نشده.</p>
+        {% endif %}
+    </section>
 
 {% endblock %}

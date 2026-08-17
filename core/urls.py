@@ -14,6 +14,8 @@ urlpatterns = [
     path("instructor/student/<int:user_id>/", views.instructor_student_detail, name="instructor_student_detail"),
     path("instructor/submission/<int:submission_id>/review/", views.mark_reviewed, name="mark_reviewed"),
     path("articles/new/", views.article_create, name="article_create"),
+    path("articles/mine/", views.my_articles, name="my_articles"),
     path("articles/<str:slug>/edit/", views.article_edit, name="article_edit"),
+    path("articles/<str:slug>/delete/", views.article_delete, name="article_delete"),
     path("articles/<str:slug>/", views.article_detail, name="article_detail"),
 ]

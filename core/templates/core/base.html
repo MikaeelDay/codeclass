@@ -21,7 +21,7 @@
         {% if user.is_authenticated %}
             {% if user.is_staff %}
                 <a href="{% url 'instructor_overview' %}">پنل مدرس</a>
-                <a href="{% url 'article_create' %}">نوشتن مقاله</a>
+                <a href="{% url 'my_articles' %}">مقالات من</a>
             {% else %}
                 <a href="{% url 'dashboard' %}">محیط کدنویسی</a>
             {% endif %}
