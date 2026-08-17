@@ -8,39 +8,40 @@
     <link rel="stylesheet" href="{% static 'core/style.css' %}">
 </head>
 <body>
-    <header class="topbar">
-        <a href="{% url 'home' %}" class="topbar__brand">
-            <span class="dot dot--red"></span>
-            <span class="dot dot--yellow"></span>
-            <span class="dot dot--green"></span>
-            <span class="topbar__title">کلاس&nbsp;پایتون</span>
-        </a>
+<header class="topbar">
+    <a href="{% url 'home' %}" class="topbar__brand">
+        <span class="dot dot--red"></span>
+        <span class="dot dot--yellow"></span>
+        <span class="dot dot--green"></span>
+        <span class="topbar__title">کلاس&nbsp;پایتون</span>
+    </a>
 
-        <nav class="topbar__nav">
-            <a href="{% url 'home' %}">صفحه اصلی</a>
-            {% if user.is_authenticated %}
-                {% if user.is_staff %}
-                    <a href="{% url 'instructor_overview' %}">پنل مدرس</a>
-                {% else %}
-                    <a href="{% url 'dashboard' %}">محیط کدنویسی</a>
-                {% endif %}
-                <span class="topbar__user">{{ user.username }}</span>
-                <form action="{% url 'logout' %}" method="post" class="topbar__logout">
-                    {% csrf_token %}
-                    <button type="submit">خروج</button>
-                </form>
+    <nav class="topbar__nav">
+        <a href="{% url 'home' %}">صفحه اصلی</a>
+        {% if user.is_authenticated %}
+            {% if user.is_staff %}
+                <a href="{% url 'instructor_overview' %}">پنل مدرس</a>
+                <a href="{% url 'article_create' %}">نوشتن مقاله</a>
             {% else %}
-                <a href="{% url 'login' %}" class="btn btn--small btn--primary">ورود</a>
+                <a href="{% url 'dashboard' %}">محیط کدنویسی</a>
             {% endif %}
-        </nav>
-    </header>
+            <span class="topbar__user">{{ user.username }}</span>
+            <form action="{% url 'logout' %}" method="post" class="topbar__logout">
+                {% csrf_token %}
+                <button type="submit">خروج</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn--small btn--primary">ورود</a>
+        {% endif %}
+    </nav>
+</header>
 
-    <main class="page">
-        {% block content %}{% endblock %}
-    </main>
+<main class="page">
+    {% block content %}{% endblock %}
+</main>
 
-    <footer class="site-footer">
-        <p>© {% now "Y" %} کلاس پایتون — همه‌ی حقوق محفوظ است.</p>
-    </footer>
+<footer class="site-footer">
+    <p>© {% now "Y" %} کلاس پایتون — همه‌ی حقوق محفوظ است.</p>
+</footer>
 </body>
 </html>

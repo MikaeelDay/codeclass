@@ -6,7 +6,7 @@ from .code_runner import run_python_code
 from .models import Submission, Article
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
-
+from .forms import ArticleForm
 
 STARTER_CODE = '''# اینجا کد پایتون خودتان را بنویسید
 print("سلام دنیا!")
@@ -119,3 +119,30 @@ def mark_reviewed(request, submission_id):
 def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug, published=True)
     return render(request, "core/article_detail.html", {"article": article})
+
+
+@user_passes_test(is_instructor)
+def article_create(request):
+    if request.method == "POST":
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
+            return redirect("article_detail", slug=article.slug)
+    else:
+        form = ArticleForm()
+    return render(request, "core/article_form.html", {"form": form, "mode": "create"})
+
+
+@user_passes_test(is_instructor)
+def article_edit(request, slug):
+    article = get_object_or_404(Article, slug=slug)
+    if request.method == "POST":
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect("article_detail", slug=article.slug)
+    else:
+        form = ArticleForm(instance=article)
+    return render(request, "core/article_form.html", {"form": form, "mode": "edit", "article": article})

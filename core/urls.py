@@ -18,4 +18,6 @@ urlpatterns = [
     path("instructor/student/<int:user_id>/", views.instructor_student_detail, name="instructor_student_detail"),
     path("instructor/submission/<int:submission_id>/review/", views.mark_reviewed, name="mark_reviewed"),
     path("articles/<slug:slug>/", views.article_detail, name="article_detail"),
+    path("articles/new/", views.article_create, name="article_create"),
+    path("articles/<slug:slug>/edit/", views.article_edit, name="article_edit"),
 ]

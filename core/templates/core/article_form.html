@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{% block title %}{% if mode == "edit" %}ویرایش مقاله{% else %}مقاله‌ی جدید{% endif %}{% endblock %}
+{% block content %}
+<div class="article-form-wrap">
+    <h1 class="page-heading">
+        {% if mode == "edit" %}ویرایش مقاله{% else %}نوشتن مقاله‌ی جدید{% endif %}
+    </h1>
+
+    <form method="post" class="article-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="article-form__field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <p class="alert alert--error">{{ field.errors }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn--primary">
+            {% if mode == "edit" %}ذخیره تغییرات{% else %}انتشار مقاله{% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

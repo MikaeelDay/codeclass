@@ -262,3 +262,16 @@ code {
     .panel__bar { flex-direction: column; align-items: flex-start; gap: 10px; }
     .panel__bar-actions { flex-wrap: wrap; width: 100%; }
 }
+
+/* ----- Article form ----- */
+.article-form-wrap { max-width: 640px; margin: 0 auto; }
+.article-form__field { margin-bottom: 18px; }
+.article-form__field label {
+    display: block; font-size: .85rem; color: var(--text-dim); margin-bottom: 6px;
+}
+.article-form input[type=text], .article-form textarea {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--line);
+    border-radius: 8px; color: var(--text); padding: 10px 12px;
+    font-family: var(--font-ui); font-size: .95rem;
+}
+.article-form input:focus, .article-form textarea:focus { outline: none; border-color: var(--amber); }
