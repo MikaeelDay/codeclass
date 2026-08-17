@@ -9,30 +9,38 @@
 </head>
 <body>
     <header class="topbar">
-        <div class="topbar__brand">
+        <a href="{% url 'home' %}" class="topbar__brand">
             <span class="dot dot--red"></span>
             <span class="dot dot--yellow"></span>
             <span class="dot dot--green"></span>
             <span class="topbar__title">کلاس&nbsp;پایتون</span>
-        </div>
-        {% if user.is_authenticated %}
+        </a>
+
         <nav class="topbar__nav">
-            {% if user.is_staff %}
-                <a href="{% url 'instructor_overview' %}">پنل مدرس</a>
+            <a href="{% url 'home' %}">صفحه اصلی</a>
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'instructor_overview' %}">پنل مدرس</a>
+                {% else %}
+                    <a href="{% url 'dashboard' %}">محیط کدنویسی</a>
+                {% endif %}
+                <span class="topbar__user">{{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" class="topbar__logout">
+                    {% csrf_token %}
+                    <button type="submit">خروج</button>
+                </form>
             {% else %}
-                <a href="{% url 'dashboard' %}">محیط کدنویسی</a>
+                <a href="{% url 'login' %}" class="btn btn--small btn--primary">ورود</a>
             {% endif %}
-            <span class="topbar__user">{{ user.username }}</span>
-            <form action="{% url 'logout' %}" method="post" class="topbar__logout">
-                {% csrf_token %}
-                <button type="submit">خروج</button>
-            </form>
         </nav>
-        {% endif %}
     </header>
 
     <main class="page">
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="site-footer">
+        <p>© {% now "Y" %} کلاس پایتون — همه‌ی حقوق محفوظ است.</p>
+    </footer>
 </body>
 </html>
