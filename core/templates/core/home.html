@@ -1,0 +1,9 @@
+{% extends "core/base.html" %}
+{% block title %}کلاس پایتون{% endblock %}
+{% block content %}
+<h1>صفحه‌ی اصلی (موقت — قدم بعد کامل می‌شه)</h1>
+<p>تعداد مقالات منتشرشده: {{ articles.count }}</p>
+{% if not user.is_authenticated %}
+<a href="{% url 'login' %}">ورود</a>
+{% endif %}
+{% endblock %}

@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .code_runner import run_python_code
-from .models import Submission
+from .models import Submission, Article
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -11,6 +11,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 STARTER_CODE = '''# اینجا کد پایتون خودتان را بنویسید
 print("سلام دنیا!")
 '''
+
+
+def home(request):
+    articles = Article.objects.filter(published=True)
+    return render(request, "core/home.html", {"articles": articles})
 
 
 @login_required
