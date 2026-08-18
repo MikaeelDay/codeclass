@@ -281,3 +281,22 @@ code {
     display: flex; justify-content: center; align-items: center; gap: 16px;
     margin-top: 24px; color: var(--text-dim); font-size: .88rem;
 }
+
+/* ----- Markdown code blocks inside articles ----- */
+.article-full__body pre {
+    border-radius: 10px;
+    padding: 16px !important;
+    font-size: .88rem;
+    overflow-x: auto;
+    direction: ltr;
+    text-align: left;
+}
+.article-full__body code {
+    font-family: var(--font-mono);
+}
+.article-full__body :not(pre) > code {
+    background: var(--bg-input);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--mint);
+}
